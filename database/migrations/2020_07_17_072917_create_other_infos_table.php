@@ -15,7 +15,7 @@ class CreateOtherInfosTable extends Migration
     {
         Schema::create('other_infos', function (Blueprint $table) {
             $table->id();
-            $table->morph('other_info');
+            $table->morphs('other_info');
             $table->string('title');
             $table->string('description');
             $table->timestamps();
