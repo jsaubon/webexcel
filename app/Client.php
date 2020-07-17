@@ -16,4 +16,8 @@ class Client extends Model
     public function employees() {
         return $this->hasMany('App\Employee','client_id');
     }
+
+    public function client_payrolls() {
+        return $this->hasMany('App\ClientPayroll','client_id');
+    }
 }

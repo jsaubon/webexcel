@@ -19,6 +19,8 @@ class CreateClientPayrollsTable extends Migration
             $table->integer('employee_id')->unsigned();
             $table->integer('days_present');
             $table->integer('hours_overtime')->default(0);
+            $table->datetime('date_start');
+            $table->datetime('date_end');
             $table->timestamps();
         });
     }

@@ -18,6 +18,7 @@ class CreateClientEmployeeDeductionsTable extends Migration
             $table->integer('employee_id')->unsigned();
             $table->string('deduction');
             $table->double('amount');
+            $table->datetime('date_applied');
             $table->timestamps();
         });
     }

@@ -36,4 +36,10 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+
+    public function other_info()
+    {
+        return $this->morphMany('App\OtherInfo', 'other_infoable');
+    }
 }
