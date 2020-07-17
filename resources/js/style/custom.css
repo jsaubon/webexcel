@@ -1,0 +1,28 @@
+.site-layout-content {
+    background: #fff;
+    padding: 24px;
+    min-height: 280px;
+}
+.layout .logo {
+    width: 120px;
+    height: 31px;
+    background: rgba(0, 0, 0, 0.2);
+    margin: 16px 24px 16px 0;
+    float: left;
+}
+
+.ant-layout-header {
+    background: #fff;
+}
+
+.pull-left {
+    float: left;
+}
+
+.pull-right {
+    float: right;
+}
+
+.mr-0 {
+    margin-right: 0px;
+}
