@@ -12,21 +12,20 @@ import Login from "./components/pages/public/login";
 
 const App = () => {
     let isLogged = localStorage.getItem("token");
-    console.log(isLogged);
     return (
         <StateProvider>
             <Router>
                 <Switch>
                     <Route
+                        path="/"
+                        name="Home"
+                        component={isLogged ? LayoutContent : Login}
+                    />
+                    <Route
                         exact
                         path="/login"
                         name="Login Page"
                         render={props => <Login {...props} />}
-                    />
-                    <Route
-                        path="/"
-                        name="Home"
-                        component={isLogged ? LayoutContent : Login}
                     />
                 </Switch>
             </Router>

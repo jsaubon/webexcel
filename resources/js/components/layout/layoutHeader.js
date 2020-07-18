@@ -5,6 +5,10 @@ import { Link } from "react-router-dom";
 import { PieChartOutlined, SettingOutlined } from "@ant-design/icons";
 const LayoutHeader = () => {
     const { Header } = Layout;
+    const handleLogout = () => {
+        localStorage.removeItem("token");
+        location.reload();
+    };
 
     return (
         <Header style={{ position: "fixed", zIndex: 1, width: "100%" }}>
@@ -29,7 +33,12 @@ const LayoutHeader = () => {
                     key="/settings"
                 >
                     <Menu.Item key="settings_logout">
-                        <Link to="/settings/logout">Logout</Link>
+                        <Link
+                            to="/settings/logout"
+                            onClick={e => handleLogout()}
+                        >
+                            Logout
+                        </Link>
                     </Menu.Item>
                 </Menu.SubMenu>
             </Menu>
