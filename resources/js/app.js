@@ -8,13 +8,26 @@ import LayoutContent from "./components/layout/layoutContent";
 import "antd/dist/antd.css";
 import "./style/custom.css";
 import StateProvider from "./Provider";
+import Login from "./components/pages/public/login";
 
 const App = () => {
+    let isLogged = localStorage.getItem("token");
+    console.log(isLogged);
     return (
         <StateProvider>
             <Router>
                 <Switch>
-                    <Route path="/" name="home" component={LayoutContent} />
+                    <Route
+                        exact
+                        path="/login"
+                        name="Login Page"
+                        render={props => <Login {...props} />}
+                    />
+                    <Route
+                        path="/"
+                        name="Home"
+                        component={isLogged ? LayoutContent : Login}
+                    />
                 </Switch>
             </Router>
         </StateProvider>

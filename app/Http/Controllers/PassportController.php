@@ -51,7 +51,7 @@ class PassportController extends Controller
             $token = auth()->user()->createToken('Commando-Payroll')->accessToken;
             return response()->json(['token' => $token], 200);
         } else {
-            return response()->json(['error' => 'UnAuthorised'], 401);
+            return response()->json(['error' => 'Username or Password is Invalid', 'data' => $credentials], 401);
         }
     }
 
