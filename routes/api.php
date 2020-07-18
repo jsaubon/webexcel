@@ -30,4 +30,6 @@ Route::middleware('auth:api')->group(function () {
     Route::apiResource('employee_accounting','ClientEmployeeAccountingController');
     Route::apiResource('employee_deduction','ClientEmployeeDeductionController');
     Route::apiResource('payroll','ClientPayrollController');
+
+    Route::post('client/logo','ClientController@uploadLogo');
 });

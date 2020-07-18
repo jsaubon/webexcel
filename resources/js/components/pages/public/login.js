@@ -96,6 +96,7 @@ const Login = () => {
                                                 <UserOutlined className="site-form-item-icon" />
                                             }
                                             placeholder="Username"
+                                            type="email"
                                         />
                                     </Form.Item>
                                     <Form.Item
