@@ -39,6 +39,16 @@ const PageDashboard = () => {
     return (
         <Card>
             <Title title={3}>Costs & Returns Breakout - Fiber & Hurd</Title>
+            <Title title={3}>Update</Title>
+            <Input
+                placeholder="Stalk - Bale"
+                type="number"
+                name="e13"
+                onChange={e => handleUpdate(e)}
+                ref={e => (inputE13 = e)}
+            />{" "}
+            <br />
+            <br />
             <Title level={4}>
                 Break Even Ratio in Tons- Fiber & Hurd:{" "}
                 {updateLoading ? (
@@ -47,15 +57,6 @@ const PageDashboard = () => {
                     excelResponse && excelResponse[0]
                 )}
             </Title>
-
-            <Title title={3}>Update</Title>
-            <Input
-                placeholder="Stalk - Bale"
-                type="number"
-                name="e13"
-                onChange={e => handleUpdate(e)}
-                ref={e => (inputE13 = e)}
-            />
         </Card>
     );
 };
