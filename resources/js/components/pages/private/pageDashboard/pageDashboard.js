@@ -1,15 +1,30 @@
 import { Card, Form, Input, Table } from "antd";
 import Title from "antd/lib/typography/Title";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { fetchData } from "../../../../axios";
 import { LoadingOutlined } from "@ant-design/icons";
 
 const PageDashboard = () => {
     const [excelResponse, setExcelResponse] = useState();
     const [updateLoading, setUpdateLoading] = useState(false);
+    const [triggerUpdate, setTriggerUpdate] = useState(false);
+    let inputE13;
+    let timer = null;
     const handleUpdate = e => {
+        clearTimeout(timer);
+        timer = setTimeout(() => {
+            setTriggerUpdate(true);
+        }, 1000);
+    };
+    useEffect(() => {
+        if (triggerUpdate) {
+            update();
+        }
+        return () => {};
+    }, [triggerUpdate]);
+    function update() {
         let data = {
-            [e.target.name]: e.target.value
+            [inputE13.props.name]: inputE13.state.value
         };
         setUpdateLoading(true);
         fetchData("POST", "api/webexcel", data).then(res => {
@@ -17,9 +32,10 @@ const PageDashboard = () => {
             if (res.success) {
                 setExcelResponse(res.data);
                 setUpdateLoading(false);
+                setTriggerUpdate(false);
             }
         });
-    };
+    }
     return (
         <Card>
             <Title title={3}>Costs & Returns Breakout - Fiber & Hurd</Title>
@@ -38,6 +54,7 @@ const PageDashboard = () => {
                 type="number"
                 name="e13"
                 onChange={e => handleUpdate(e)}
+                ref={e => (inputE13 = e)}
             />
         </Card>
     );
