@@ -4,6 +4,7 @@ import { Layout, Breadcrumb } from "antd";
 import LayoutHeader from "./LayoutHeader";
 import LayoutFooter from "./LayoutFooter";
 import PageUsers from "../pages/private/pageUsers/pageUsers";
+import PageDashboard from "../pages/private/pageDashboard/pageDashboard";
 
 const LayoutContent = () => {
     const { Content } = Layout;
@@ -20,9 +21,10 @@ const LayoutContent = () => {
                     style={{ padding: 24, minHeight: 380 }}
                 >
                     <Switch>
+                        <Route exact path="/dashboard" component={PageDashboard} />
                         <Route exact path="/users" component={PageUsers} />
                         <Route path="/" exact>
-                            <Redirect to="/users" />
+                            <Redirect to="/dashboard" />
                         </Route>
                     </Switch>
                 </div>
