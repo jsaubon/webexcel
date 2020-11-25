@@ -23,9 +23,11 @@ Route::middleware('auth:api')->group(function () {
     Route::get('user', 'PassportController@details');
 
     Route::apiResource('user','UserController');
-    Route::apiResource('webexcel','WebExcelController');
+    
 
 });
+
+Route::apiResource('webexcel','WebExcelController');
 
 // Route::post('webexcel', function($request) {
 //     $googleClient = Google::getClient();;
