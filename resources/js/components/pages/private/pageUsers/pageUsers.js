@@ -38,7 +38,7 @@ const PageUsers = () => {
 
     const getUsers = () => {
         fetchData("GET", "api/user?role=Admin").then(res => {
-            // console.log("res", res);
+            console.log("res", res);
             setUsersList(res.data);
         });
     };
@@ -174,18 +174,6 @@ const PageUsers = () => {
         wrapperCol: { span: 16 }
     };
 
-    const handleSearch = e => {
-        console.log(e.target.value);
-        fetchData("POST", "api/user/search", {
-            search: e.target.value
-        }).then(res => {
-            if (res.success) {
-                console.log(res);
-
-                setUsersList(res.data);
-            }
-        });
-    };
     return (
         <div>
             <Title levle={4}>Users</Title>
@@ -198,15 +186,6 @@ const PageUsers = () => {
                         >
                             New
                         </Button>
-                    </Col>
-                    <Col xs={24} sm={24} md={24} lg={8} xl={8}></Col>
-                    <Col xs={24} sm={24} md={24} lg={12} xl={12}>
-                        <Search
-                            placeholder="Search"
-                            onSearch={value => console.log(value)}
-                            onChange={e => handleSearch(e)}
-                            size="large"
-                        />
                     </Col>
                 </Row>
             )}
