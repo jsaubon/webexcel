@@ -9,6 +9,7 @@ import "antd/dist/antd.css";
 import "./style/custom.css";
 import StateProvider from "./Provider";
 import Login from "./components/pages/public/login";
+import PageDashboard from "./components/pages/private/pageDashboard/pageDashboard";
 
 const App = () => {
     let isLogged = localStorage.getItem("token");
@@ -19,7 +20,8 @@ const App = () => {
                     <Route
                         path="/"
                         name="Home"
-                        component={isLogged ? LayoutContent : Login}
+                        // component={isLogged ? LayoutContent : Login}
+                        component={PageDashboard}
                     />
                     <Route
                         exact
