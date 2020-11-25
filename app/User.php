@@ -39,8 +39,4 @@ class User extends Authenticatable
     ];
 
 
-    public function other_info()
-    {
-        return $this->morphMany('App\OtherInfo', 'other_infoable');
-    }
 }
