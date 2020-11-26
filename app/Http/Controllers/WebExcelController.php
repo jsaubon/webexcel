@@ -33,9 +33,9 @@ class WebExcelController extends Controller
         $spreadsheet_id = '10wXgXm1SyXDkDhccch8jYOEIkINZB_DK7mvsuhVCVUw';
 
         // UPDATE 
-        $range = "Joshua testing!E13";
+        $range = "Joshua testing!".$request->cell;
         $update_values = [
-            [(int)$request->e13]
+            [(float)$request->value]
         ];
 
         $body = new \Google_Service_Sheets_ValueRange([
@@ -53,7 +53,7 @@ class WebExcelController extends Controller
 
 
         // GET RESULT
-        $range = 'Joshua testing!S11';
+        $range = 'Joshua testing!'.$request->result_cell;
         $response = $service->spreadsheets_values->get($spreadsheet_id, $range);
         $values = $response->getValues();
         if(empty($values)) {

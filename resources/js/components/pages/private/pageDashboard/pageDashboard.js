@@ -5,16 +5,24 @@ import { fetchData } from "../../../../axios";
 import { LoadingOutlined } from "@ant-design/icons";
 
 const PageDashboard = () => {
-    const [excelResponse, setExcelResponse] = useState();
-    const [updateLoading, setUpdateLoading] = useState(false);
+    const [excelResponse, setExcelResponse] = useState({
+        S11: "",
+        S10: "",
+        S9: ""
+    });
+    const [updateLoading, setUpdateLoading] = useState({
+        S11: false,
+        S10: false,
+        S9: false
+    });
     const [triggerUpdate, setTriggerUpdate] = useState(false);
-    let inputE13;
     let timer = null;
     const handleUpdate = e => {
         clearTimeout(timer);
+        setInputToUpdate(e.target);
         timer = setTimeout(() => {
             setTriggerUpdate(true);
-        }, 1000);
+        }, 2000);
     };
     useEffect(() => {
         if (triggerUpdate) {
@@ -23,41 +31,97 @@ const PageDashboard = () => {
         return () => {};
     }, [triggerUpdate]);
     function update() {
+        console.log($(inputToUpdate.value));
         let data = {
-            [inputE13.props.name]: inputE13.state.value
+            cell: $(inputToUpdate).attr("cell"),
+            result_cell: $(inputToUpdate).attr("resultCell"),
+            value: inputToUpdate.value
         };
-        setUpdateLoading(true);
+        console.log(data);
+        setUpdateLoading({ ...updateLoading, [data.result_cell]: true });
         fetchData("POST", "api/webexcel", data).then(res => {
-            // console.log(res);
+            console.log(res);
             if (res.success) {
-                setExcelResponse(res.data);
-                setUpdateLoading(false);
+                setExcelResponse({
+                    ...excelResponse,
+                    [data.result_cell]: res.data[0]
+                });
+                // setUpdateLoading(false);
+                setUpdateLoading({
+                    ...updateLoading,
+                    [data.result_cell]: false
+                });
                 setTriggerUpdate(false);
             }
         });
     }
+
+    const [inputToUpdate, setInputToUpdate] = useState();
     return (
-        <Card>
-            <Title title={3}>Costs & Returns Breakout - Fiber & Hurd</Title>
-            <Title title={3}>Update</Title>
-            <Input
-                placeholder="Stalk - Bale"
-                type="number"
-                name="e13"
-                onChange={e => handleUpdate(e)}
-                ref={e => (inputE13 = e)}
-            />{" "}
-            <br />
-            <br />
-            <Title level={4}>
-                Break Even Ratio in Tons- Fiber & Hurd:{" "}
-                {updateLoading ? (
-                    <LoadingOutlined spin />
-                ) : (
-                    excelResponse && excelResponse[0]
-                )}
-            </Title>
-        </Card>
+        <>
+            <Card>
+                <Title title={3}>Costs & Returns Breakout - Fiber & Hurd</Title>
+                <Title title={3}>Stalk - Bale</Title>
+                <Input
+                    placeholder="Stalk - Bale"
+                    type="number"
+                    cell="E13"
+                    resultCell="S11"
+                    onChange={e => handleUpdate(e)}
+                />{" "}
+                <br />
+                <br />
+                <Title level={4}>
+                    Break Even Ratio in Tons- Fiber & Hurd:{" "}
+                    {updateLoading.S11 ? (
+                        <LoadingOutlined spin />
+                    ) : (
+                        excelResponse.S11
+                    )}
+                </Title>
+            </Card>
+            <Card>
+                <Title title={3}>Long Fiber - 1st mill</Title>
+                <Input
+                    placeholder="Long Fiber - 1st mill"
+                    type="number"
+                    cell="E14"
+                    resultCell="S9"
+                    onChange={e => handleUpdate(e)}
+                />{" "}
+                <br />
+                <br />
+                <Title level={4}>
+                    Margin - Fiber & Hurd - 1 Year Depreciation:
+                    {updateLoading.S9 ? (
+                        <LoadingOutlined spin />
+                    ) : (
+                        excelResponse.S9
+                    )}
+                </Title>
+            </Card>
+
+            <Card>
+                <Title title={3}>Hurd - 1st mill</Title>
+                <Input
+                    placeholder="Hurd - 1st mill"
+                    type="number"
+                    cell="E15"
+                    resultCell="S10"
+                    onChange={e => handleUpdate(e)}
+                />{" "}
+                <br />
+                <br />
+                <Title level={4}>
+                    Margin - Fiber & Hurd - 1 Year Depreciation:
+                    {updateLoading.S10 ? (
+                        <LoadingOutlined spin />
+                    ) : (
+                        excelResponse.S10
+                    )}
+                </Title>
+            </Card>
+        </>
     );
 };
 
