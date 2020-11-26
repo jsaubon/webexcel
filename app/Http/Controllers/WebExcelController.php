@@ -32,42 +32,56 @@ class WebExcelController extends Controller
         $service = new \Google_Service_Sheets($googleClient);
         $spreadsheet_id = '10wXgXm1SyXDkDhccch8jYOEIkINZB_DK7mvsuhVCVUw';
 
-        // UPDATE 
-        $range = "Joshua testing!".$request->cell;
-        $update_values = [
-            [(float)$request->value]
-        ];
+        if($request->action == 'getInputsAndResultsByRange') {
+            // INPUTS
+            $range = [
+                        $request->inputs
+                    ];
+            $params = [
+                'valueRenderOption' => 'UNFORMATTED_VALUE'
+            ];
+            $response = $service->spreadsheets_values->get($spreadsheet_id, $range, $params);
+            $data['inputs'] = $response->getValues();
+            
+            // RESULTS
+            $range = [
+                        $request->results
+                    ];
+            $response = $service->spreadsheets_values->get($spreadsheet_id, $range);
+            $data['results'] = $response->getValues();
 
-        $body = new \Google_Service_Sheets_ValueRange([
-            'values' => $update_values
-        ]);
-        $params = [
-            'valueInputOption' => 'RAW'
-        ];
-        $result = $service->spreadsheets_values->update(
-            $spreadsheet_id,
-            $range,
-            $body,
-            $params
-        );
-
-
-        // GET RESULT
-        $range = 'Joshua testing!'.$request->result_cell;
-        $response = $service->spreadsheets_values->get($spreadsheet_id, $range);
-        $values = $response->getValues();
-        if(empty($values)) {
-            $response_data = 'no data found';
+            return response()->json([
+                'success' => true,
+                'data' => $data,
+                'request' => $request->all(),
+            ]);
         } else {
-            $response_data = $values;
-        }
+        // UPDATE 
+            $range = "Joshua testing!".$request->cell;
+            $update_values = [
+                [(float)$request->value]
+            ];
 
-        return response()->json([
-            'success' => true,
-            'data' => $response_data,
-            'request' => $request->all(),
-            'update_values' => $update_values
-        ]);
+            $body = new \Google_Service_Sheets_ValueRange([
+                'values' => $update_values
+            ]);
+            $params = [
+                'valueInputOption' => 'RAW'
+            ];
+            $result = $service->spreadsheets_values->update(
+                $spreadsheet_id,
+                $range,
+                $body,
+                $params
+            );
+
+            return response()->json([
+                'success' => true,
+                'request' => $request->all(),
+                'update_values' => $update_values
+            ]);
+        }
+        
     }
 
     /**

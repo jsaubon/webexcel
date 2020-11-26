@@ -1,20 +1,10 @@
-import { Card, Form, Input, Table } from "antd";
+import { Card, Col, Form, Input, Row, Table } from "antd";
 import Title from "antd/lib/typography/Title";
 import React, { useEffect, useState } from "react";
 import { fetchData } from "../../../../axios";
 import { LoadingOutlined } from "@ant-design/icons";
 
 const PageDashboard = () => {
-    const [excelResponse, setExcelResponse] = useState({
-        S11: "",
-        S10: "",
-        S9: ""
-    });
-    const [updateLoading, setUpdateLoading] = useState({
-        S11: false,
-        S10: false,
-        S9: false
-    });
     const [triggerUpdate, setTriggerUpdate] = useState(false);
     let timer = null;
     const handleUpdate = e => {
@@ -22,7 +12,7 @@ const PageDashboard = () => {
         setInputToUpdate(e.target);
         timer = setTimeout(() => {
             setTriggerUpdate(true);
-        }, 2000);
+        }, 1500);
     };
     useEffect(() => {
         if (triggerUpdate) {
@@ -31,96 +21,110 @@ const PageDashboard = () => {
         return () => {};
     }, [triggerUpdate]);
     function update() {
-        console.log($(inputToUpdate.value));
         let data = {
             cell: $(inputToUpdate).attr("cell"),
-            result_cell: $(inputToUpdate).attr("resultCell"),
             value: inputToUpdate.value
         };
-        console.log(data);
-        setUpdateLoading({ ...updateLoading, [data.result_cell]: true });
         fetchData("POST", "api/webexcel", data).then(res => {
-            console.log(res);
             if (res.success) {
-                setExcelResponse({
-                    ...excelResponse,
-                    [data.result_cell]: res.data[0]
-                });
-                // setUpdateLoading(false);
-                setUpdateLoading({
-                    ...updateLoading,
-                    [data.result_cell]: false
-                });
+                getInputsAndResultsByRange(
+                    "Joshua testing!E13:E15",
+                    "Joshua testing!S9:S11"
+                );
                 setTriggerUpdate(false);
             }
         });
     }
+    useEffect(() => {
+        getInputsAndResultsByRange(
+            "Joshua testing!E13:E15",
+            "Joshua testing!S9:S11"
+        );
+        return () => {};
+    }, []);
+    const [cellValues, setCellValues] = useState();
+    const [resultsLoading, setResultsLoading] = useState(false);
+    const getInputsAndResultsByRange = (inputs, results) => {
+        let data = {
+            action: "getInputsAndResultsByRange",
+            inputs: inputs,
+            results: results
+        };
+        setResultsLoading(true);
+        fetchData("POST", "api/webexcel", data).then(res => {
+            setCellValues(res.data);
+            setResultsLoading(false);
+        });
+    };
+
+    useEffect(() => {
+        console.log(cellValues);
+        return () => {};
+    }, [cellValues]);
 
     const [inputToUpdate, setInputToUpdate] = useState();
     return (
         <>
-            <Card>
-                <Title title={3}>Costs & Returns Breakout - Fiber & Hurd</Title>
-                <Title title={3}>Stalk - Bale</Title>
-                <Input
-                    placeholder="Stalk - Bale"
-                    type="number"
-                    cell="E13"
-                    resultCell="S11"
-                    onChange={e => handleUpdate(e)}
-                />{" "}
-                <br />
-                <br />
-                <Title level={4}>
-                    Break Even Ratio in Tons- Fiber & Hurd:{" "}
-                    {updateLoading.S11 ? (
-                        <LoadingOutlined spin />
-                    ) : (
-                        excelResponse.S11
+            <Row>
+                <Col xs={24} md={12}>
+                    <Title>
+                        Inputs {resultsLoading && <LoadingOutlined spin />}
+                    </Title>
+                    <h4>Stalk - Bale</h4>
+                    <Input
+                        type="number"
+                        cell="E13"
+                        placeholder={
+                            cellValues
+                                ? `Current Value ${cellValues.inputs[0][0]}`
+                                : "Stalk - Bale"
+                        }
+                        onChange={e => handleUpdate(e)}
+                    />{" "}
+                    <h4>Long Fiber - 1st mill</h4>
+                    <Input
+                        type="number"
+                        cell="E14"
+                        placeholder={
+                            cellValues
+                                ? `Current Value ${cellValues.inputs[1][0]}`
+                                : "Long Fiber - 1st mill"
+                        }
+                        onChange={e => handleUpdate(e)}
+                    />{" "}
+                    <h4>Hurd - 1st mill</h4>
+                    <Input
+                        type="number"
+                        cell="E15"
+                        placeholder={
+                            cellValues
+                                ? `Current Value ${cellValues.inputs[2][0]}`
+                                : "Hurd - 1st mill"
+                        }
+                        onChange={e => handleUpdate(e)}
+                    />{" "}
+                </Col>
+                <Col xs={24} md={12}>
+                    <Title>
+                        Results {resultsLoading && <LoadingOutlined spin />}
+                    </Title>
+                    {cellValues && (
+                        <>
+                            <h3>Costs & Returns Breakout - Fiber & Hurd </h3>
+                            <p>
+                                Margin - Fiber & Hurd- (E33) Year Depreciation:{" "}
+                                {cellValues.results[2][0]} <br />
+                                Margin - Fiber & Hurd - 1 Year Depreciation
+                                Break Even: {cellValues.results[1][0]} <br />
+                                Ratio - Fiber & Hurd: {
+                                    cellValues.results[0][0]
+                                }{" "}
+                                <br />
+                            </p>
+                        </>
                     )}
-                </Title>
-            </Card>
-            <Card>
-                <Title title={3}>Long Fiber - 1st mill</Title>
-                <Input
-                    placeholder="Long Fiber - 1st mill"
-                    type="number"
-                    cell="E14"
-                    resultCell="S9"
-                    onChange={e => handleUpdate(e)}
-                />{" "}
-                <br />
-                <br />
-                <Title level={4}>
-                    Margin - Fiber & Hurd - 1 Year Depreciation:
-                    {updateLoading.S9 ? (
-                        <LoadingOutlined spin />
-                    ) : (
-                        excelResponse.S9
-                    )}
-                </Title>
-            </Card>
-
-            <Card>
-                <Title title={3}>Hurd - 1st mill</Title>
-                <Input
-                    placeholder="Hurd - 1st mill"
-                    type="number"
-                    cell="E15"
-                    resultCell="S10"
-                    onChange={e => handleUpdate(e)}
-                />{" "}
-                <br />
-                <br />
-                <Title level={4}>
-                    Margin - Fiber & Hurd - 1 Year Depreciation:
-                    {updateLoading.S10 ? (
-                        <LoadingOutlined spin />
-                    ) : (
-                        excelResponse.S10
-                    )}
-                </Title>
-            </Card>
+                </Col>
+            </Row>
         </>
     );
 };
